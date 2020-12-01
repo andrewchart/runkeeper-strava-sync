@@ -1,0 +1,19 @@
+{
+  "name": "runkeeper-strava-sync",
+  "version": "1.0.0",
+  "description": "Scripts to receive GPS data from Runkeeper, convert it to GPX format, then upload it to Strava as a new activity.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://AndrewChart@bitbucket.org/AndrewChart/runkeeper-strava-sync.git"
+  },
+  "author": "Andrew Chart",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/AndrewChart/runkeeper-strava-sync#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
