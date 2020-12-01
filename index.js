@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '6mb' }))
+app.use(express.urlencoded({ extended: true, limit: '6mb' }))
 
 app.post('/', function (req, res, next) {
   res.json(req.body)
