@@ -21,8 +21,8 @@ app.post('/', function (req, res) {
   }
 
   // Save the json to a file for asynchronous processing
-  // const saveJson = require('./modules/save-json.js');
-  // saveJson();
+  const saveJson = require('./modules/save-json.js');
+  saveJson(req.body);
 
   res.status(200).json({status: 'SUCCESS', message: 'OK'});
 })

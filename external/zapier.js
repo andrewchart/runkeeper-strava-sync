@@ -6,16 +6,16 @@
  *
  * inoutData: JSON object containing all the data provided by the zap to the code step.
  *
- * Expected keys are:
- * activityType
- * activityStartTimeIso
- * activityNotes
- * activityPathLatitude
- * activityPathLongitude
- * activityPathTimestamp
- * activityPathType
- * apiEndpoint
- * apiSecret
+ * Expected keys are as per '../modules/validate-payload.js':
+ * - activityType
+ * - activityStartTimeIso
+ * - activityNotes
+ * - activityPathLatitude
+ * - activityPathLongitude
+ * - activityPathTimestamp
+ * - activityPathType
+ * - apiEndpoint
+ * - apiSecret
  */
 const API_ENDPOINT = inputData.apiEndpoint || null;
 const API_SECRET = inputData.apiSecret || null;
