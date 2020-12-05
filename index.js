@@ -14,17 +14,25 @@ app.post('/', function (req, res) {
     return res.status(403).json({status: 'ERROR', message: 'Invalid API Key'});
   }
 
+  // Create a copy of the body without the API details in it
+  let data = req.body;
+  delete data.apiSecret;
+  delete data.apiEndpoint;
+
   // Check the payload
   const validatePayload = require('./modules/validate-payload.js');
-  if(validatePayload(req.body) === false) {
+  if(validatePayload(data) === false) {
     return res.status(403).json({status: 'ERROR', message: 'Invalid input data'});
   }
 
   // Save the json to a file for asynchronous processing
   const saveJson = require('./modules/save-json.js');
-  saveJson(req.body);
+  saveJson(data).then(function() {
+    res.status(200).json({status: 'SUCCESS', message: 'OK'});
+  }).catch(function() {
+    res.status(500).json({status: 'ERROR', message: 'Could not write file'});
+  });
 
-  res.status(200).json({status: 'SUCCESS', message: 'OK'});
 })
 
 app.all('*', (req, res) => {
