@@ -9,9 +9,9 @@ app.use(express.urlencoded({ extended: true, limit: '6mb' }))
 
 app.post('/', function (req, res, next) {
   if(req.body.apiSecret === process.env.API_SECRET) {
-    res.status(200).json(req.body)
+    res.status(200).json({status: 'SUCCESS', message: 'OK'})
   } else {
-    res.status(403).json({error: 'INVALID_API_KEY'})
+    res.status(403).json({status: 'ERROR', message: 'Invalid API Key'})
   }
 })
 
