@@ -19,7 +19,6 @@ function validatePayload(data) {
   let validPayload = true;
 
   // Check for presence of all the keys
-  //
   for(i=0; i<expectedKeys.length; i++) {
 
     expected = expectedKeys[i];

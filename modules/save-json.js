@@ -13,16 +13,16 @@ function saveJson(data) {
     let filename = dateToFilename(data.activityStartTimeIso);
 
     // Don't allow writing of empty filenames
-    if(filename.length === 0) return reject({ message: "Filename cannot be empty"});
+    if(filename.length === 0) return reject({ message: "Filename cannot be empty" });
 
     // Write the file
-    fs.writeFile(
+    return fs.writeFile(
       'json/' + filename + '.json',
       JSON.stringify(data),
       'utf8',
       (error) => {
         if(error) reject({ message: error });
-        else resolve({ message: "File written successfully" });
+        else return resolve({ message: "File written successfully" });
       }
     );
 
