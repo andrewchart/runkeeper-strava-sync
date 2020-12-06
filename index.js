@@ -22,7 +22,7 @@ app.post('/', function (req, res) {
   // Check the payload
   const validatePayload = require('./modules/validate-payload.js');
   if(validatePayload(data) === false) {
-    return res.status(403).json({status: 'ERROR', message: 'Invalid input data'});
+    return res.status(400).json({status: 'ERROR', message: 'Invalid input data'});
   }
 
   // Save the json to a file for asynchronous processing

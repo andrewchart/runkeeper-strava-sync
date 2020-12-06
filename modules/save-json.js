@@ -19,6 +19,7 @@ function saveJson(data) {
     fs.writeFile(
       'json/' + filename + '.json',
       JSON.stringify(data),
+      'utf8',
       (error) => {
         if(error) reject({ message: error });
         else resolve({ message: "File written successfully" });
