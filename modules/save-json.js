@@ -10,6 +10,7 @@ function saveJson(data) {
   return new Promise(function(resolve, reject) {
 
     // Get a filename from the activity date
+    const dateToFilename = require('./date-to-filename.js');
     let filename = dateToFilename(data.activityStartTimeIso);
 
     // Don't allow writing of empty filenames
@@ -27,11 +28,6 @@ function saveJson(data) {
     );
 
   });
-}
-
-function dateToFilename(date) {
-  const regex = /-|:|Z/gi;
-  return date.replace(regex,"").replace("T","-").trim();
 }
 
 module.exports = saveJson;
