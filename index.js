@@ -35,6 +35,18 @@ app.post('/', function (req, res) {
 
 })
 
+app.get('/json-to-gpx', function(req,res) {
+
+  const jsonToGpx = require('./modules/json-to-gpx.js');
+  
+  jsonToGpx('json/example.json').then(function(){
+    res.status(200).json({status: 'SUCCESS', message: 'JSON converted to GPX'});
+  }).catch(function() {
+    res.status(500).json({status: 'ERROR', message: 'Could not convert JSON to GPX'});
+  });
+
+});
+
 app.all('*', (req, res) => {
   res.status(404).json({status: 'ERROR', message: 'Not Found'})
 })
