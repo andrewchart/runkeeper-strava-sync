@@ -12,6 +12,7 @@
  * - activityNotes
  * - activityPathLatitude
  * - activityPathLongitude
+ * - activityPathAltitude
  * - activityPathTimestamp
  * - activityPathType
  * - apiEndpoint

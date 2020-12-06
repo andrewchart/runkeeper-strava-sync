@@ -12,6 +12,7 @@ function validatePayload(data) {
     'activityNotes',
     'activityPathLatitude',
     'activityPathLongitude',
+    'activityPathAltitude',
     'activityPathTimestamp',
     'activityPathType'
   ];
