@@ -168,7 +168,10 @@ function saveGpx(jsTemplate) {
   return new Promise(function(resolve, reject) {
 
     // Convert JS to XML
-    var builder = new xml2js.Builder();
+    var builder = new xml2js.Builder({
+      xmldec: { 'version': '1.0', 'encoding': 'UTF-8' },
+      cdata: true
+    });
     var xml = builder.buildObject(jsTemplate);
 
     // Write the file
