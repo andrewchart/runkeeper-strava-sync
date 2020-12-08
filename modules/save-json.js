@@ -2,7 +2,10 @@
  * save-json.js
  *
  * Saves a JSON file containing the payload data to the filesystem
- *
+ * @param  {Object} data  A javascript object containing all the data for an
+ *                        activity.
+ * @return {Promise}      Resolves to a string if the json is written
+ *                        successfully to the filesystem.
  */
 function saveJson(data) {
   fs = require('fs');

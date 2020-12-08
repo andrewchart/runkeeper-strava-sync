@@ -2,7 +2,9 @@
  * json-to-gpx.js
  *
  * Converts a json file to a gpx file
- *
+ * @param  {String} input Reference to input filename including path
+ * @return {Promise}      Resolves to a success message if the JSON in the file
+ *                        is successfully converted to GPX.
  */
 function jsonToGpx(input) {
   fs = require('fs');
@@ -73,10 +75,13 @@ function getJsTemplate() {
 }
 
 /**
- * [populateTemplate description]
- * @param  {[type]} jsTemplate [description]
- * @param  {[type]} data       [description]
- * @return {[type]}            [description]
+ * Takes the javascript object representing the GPX template, and appends actual
+ * activity data to the object, based upon the input data from the json file.
+ * @param  {Object} jsTemplate  Javascript representation of the GPX template
+ * @param  {Object} data        Data about the activity including waypoints and
+ *                              activity start time in UTC format.
+ * @return {Object}             Returns the populated gpx data for conversion
+ *                              from JS to XML.
  */
 function populateTemplate(jsTemplate, data) {
 
@@ -152,9 +157,11 @@ function parseWaypoints(data) {
 }
 
 /**
- * [saveGpx description]
- * @param  {[type]} jsTemplate [description]
- * @return {[type]}            [description]
+ * Converts the populated javascript object into a string of XML then aaves the
+ * XML in GPX format, to a file in the filesystem.
+ * @param  {Object} jsTemplate Completed object containing activity data
+ * @return {Promise}           Resolves to a success message upon successful
+ *                             writing of the file to the filesystem.
  */
 function saveGpx(jsTemplate) {
 
