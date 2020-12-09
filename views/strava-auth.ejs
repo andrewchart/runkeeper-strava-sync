@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Authorize Strava</title>
+    <style>
+      * {
+        margin: 0;
+        padding:0;
+        font-family: sans-serif;
+      }
+
+      body {
+        max-width: 600px;
+        line-height: 150%;
+      }
+
+      h1, h2, p, button {
+        padding: 0.5em 12px;
+      }
+
+      h2 {
+        margin-top: 2em;
+      }
+
+      button {
+        margin: 12px 0 0 12px;
+        background-color: #ff7615;
+        color: #111;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Authorise Strava</h1>
+    <p>Use this page to give this application access to the Strava account which
+       you want to receive notifications about your Runkeeper activites.</p>
+    <p>You can authorise a single Strava account at a time.</p>
+
+    <h2>Current Authorised User</h2>
+    <div class="connected-account">
+      <% if (data.user.name && data.user.account_id) { %>
+        <p>
+          Name: <%= data.user.name %><br />
+          Account ID: <%= data.user.account_id %>
+        </p>
+      <% } else { %>
+        <p>No users are currently authorised</p>
+      <% } %>
+    </div>
+
+    <a href="<%= data.strava_oauth_url %>">
+      <button>Sync a New Strava Account</button>
+    </a>
+
+  </body>
+</html>

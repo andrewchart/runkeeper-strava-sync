@@ -7,7 +7,9 @@ const port = process.env.PORT || 3000;
 app.use(express.json({ limit: '6mb' }));
 app.use(express.urlencoded({ extended: true, limit: '6mb' }));
 
-app.post('/', function (req, res) {
+app.set('view engine', 'ejs');
+
+app.post('/', (req, res) => {
 
   // Check for API Key Integrity
   if(req.body.apiSecret !== process.env.API_SECRET) {
@@ -35,7 +37,7 @@ app.post('/', function (req, res) {
 
 });
 
-app.get('/json-to-gpx', function(req,res) {
+app.get('/json-to-gpx', (req,res) => {
 
   const jsonToGpx = require('./modules/json-to-gpx.js');
 
@@ -43,6 +45,25 @@ app.get('/json-to-gpx', function(req,res) {
     res.status(200).json({status: 'SUCCESS', message: 'JSON converted to GPX'});
   }).catch(function() {
     res.status(500).json({status: 'ERROR', message: 'Could not convert JSON to GPX'});
+  });
+
+});
+
+app.get('/strava-auth', async (req, res) => {
+
+  const getStravaAuthData = require('./modules/get-strava-auth-data.js');
+  let data = await getStravaAuthData(req);
+
+  res.render('strava-auth', { data: data });
+});
+
+app.get('/strava-auth/callback', async (req, res) => {
+
+  const stravaTokenExchange = require('./modules/strava-token-exchange.js');
+  stravaTokenExchange().then(function(){
+    res.redirect(301, '/strava-auth');
+  }).catch(function(){
+    res.status(500).json({status: 'Error', message: 'Unable to grant application access to Strava account.'})
   });
 
 });
