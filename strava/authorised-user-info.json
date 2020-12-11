@@ -1,4 +1,6 @@
 {
   "name": "",
-  "account_id": ""
+  "account_id": "",
+  "access_token",
+  "refresh_token"
 }

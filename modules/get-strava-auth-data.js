@@ -2,8 +2,8 @@
  * Constructs the required data for the strava-auth.ejs view including details
  * of the currently authenticated user (if any) and the Strava Oauth url for
  * authorising this application
- * @param  req Express request object
- * @return {Object} Data for the view
+ * @param  req       Express request object
+ * @return {Object}  Data for the view
  */
 async function getStravaAuthData(req) {
 
@@ -33,7 +33,12 @@ async function getStravaAuthData(req) {
       try {
         user = JSON.parse(data);
       } catch(error) {
-        user = { name: "", account_id: "" };
+        user = {
+          name: "",
+          account_id: "",
+          access_token: "",
+          refresh_token: ""
+        };
       }
 
       return resolve({
