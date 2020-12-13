@@ -101,7 +101,6 @@ function populateTemplate(jsTemplate, data) {
   jsTemplate.gpx.metadata[0].time = data.activityStartTimeIso;
 
   // Add the waypoints
-  jsTemplate.gpx.trk[0].trkseg = new Array();
   jsTemplate.gpx.trk[0].trkseg = parseWaypoints(data);
 
   return jsTemplate;
