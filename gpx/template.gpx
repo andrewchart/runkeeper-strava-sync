@@ -6,8 +6,12 @@
   xmlns="http://www.topografix.com/GPX/1/1"
   xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
   xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
-  <trk>
+  <metadata>
     <name></name>
+    <desc></desc>
     <time></time>
+  </metadata>
+  <trk>
+    <trkseg />
   </trk>
 </gpx>

@@ -90,14 +90,18 @@ function populateTemplate(jsTemplate, data) {
   require('moment-timezone');
 
   // Construct a friendly name for the activity from London time
-  jsTemplate.gpx.trk[0].name = moment
+  jsTemplate.gpx.metadata[0].name = moment
       .tz(data.activityStartTimeIso, "Europe/London")
       .format("[" + data.activityType + " activity on] dddd Do MMMM [at] HH:mm");
 
+  // Activity notes
+  jsTemplate.gpx.metadata[0].desc = data.activityNotes;
+
   // Populate the activity start time
-  jsTemplate.gpx.trk[0].time = data.activityStartTimeIso;
+  jsTemplate.gpx.metadata[0].time = data.activityStartTimeIso;
 
   // Add the waypoints
+  jsTemplate.gpx.trk[0].trkseg = new Array();
   jsTemplate.gpx.trk[0].trkseg = parseWaypoints(data);
 
   return jsTemplate;
@@ -167,7 +171,7 @@ function saveGpx(jsTemplate) {
 
   // Get a filename from the activity date
   const dateToFilename = require('./date-to-filename.js');
-  const filename = dateToFilename(jsTemplate.gpx.trk[0].time);
+  const filename = dateToFilename(jsTemplate.gpx.metadata[0].time);
 
   // Don't allow writing of empty filenames
   if(filename.length === 0) return reject({ message: "Filename cannot be empty" });
