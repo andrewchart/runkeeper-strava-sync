@@ -30,7 +30,7 @@ app.post('/', (req, res) => {
   // Save the json to a file for asynchronous processing
   const saveJson = require('./modules/save-json.js');
   saveJson(data).then(function() {
-    res.status(200).json({status: 'SUCCESS', message: 'OK.'});
+    res.status(200).json({status: 'OK', message: 'OK.'});
   }).catch(function() {
     res.status(500).json({status: 'ERROR', message: 'Could not write file.'});
   });
@@ -42,7 +42,7 @@ app.get('/json-to-gpx', (req,res) => {
   const jsonToGpx = require('./modules/json-to-gpx.js');
 
   jsonToGpx('json/example.json').then(function() {
-    res.status(200).json({status: 'SUCCESS', message: 'JSON converted to GPX.'});
+    res.status(200).json({status: 'OK', message: 'JSON converted to GPX.'});
   }).catch(function() {
     res.status(500).json({status: 'ERROR', message: 'Could not convert JSON to GPX.'});
   });
@@ -51,8 +51,8 @@ app.get('/json-to-gpx', (req,res) => {
 
 app.get('/strava-auth', async (req, res) => {
 
-  const getStravaAuthData = require('./modules/get-strava-auth-data.js');
-  let data = await getStravaAuthData(req);
+  const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
+  let data = await stravaAuthViewData(req);
 
   res.render('strava-auth', { data: data });
 });
@@ -66,6 +66,15 @@ app.get('/strava-auth/callback', async (req, res) => {
     res.status(500).json({status: 'Error', message: 'Unable to grant application access to Strava account.'})
   });
 
+});
+
+app.get('/gpx-to-strava', (req, res) => {
+  const gpxToStrava = require('./modules/gpx-to-strava.js');
+  gpxToStrava().then((result) => {
+    res.status(200).json({status: 'OK', message: 'Activity successfully uploaded.'})
+  }).catch(function(){
+    res.status(500).json({status: 'ERROR', message: 'Unable to upload activity to Strava.'})
+  });
 });
 
 app.all('*', (req, res) => {
