@@ -9,9 +9,9 @@ async function stravaGetAuthenticatedUser() {
 
   return new Promise((resolve, reject) => {
 
-    return fs.readFile('./strava/authorised-user-info.json', 'utf8', (error, data) => {
+    return fs.readFile('./strava/authorised-user-info.json', { encoding: 'utf8', flag: 'a+' }, (error, data) => {
 
-      if(error) return reject({ error: error })
+      if(error) return reject({ error: error });
 
       let user;
 
@@ -24,10 +24,12 @@ async function stravaGetAuthenticatedUser() {
           access_token: "",
           refresh_token: ""
         };
+      } finally {
+        return resolve(user);
       }
 
-      return resolve(user);
     });
+
   });
 }
 

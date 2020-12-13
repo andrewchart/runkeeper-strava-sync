@@ -3,8 +3,8 @@
  *
  * Sends a gpx file from the filesystem to the Strava Uploads API endpoint.
  * @param  {String} input Reference to input filename including path
- * @return {Promise}      Resolves to a success message if the GPX file is
- *                        successfully uploaded to Strava.
+ * @return {Promise}      Resolves to the HTTP status code and message associated
+ *                        with the response from the Strava API.
  */
 function gpxToStrava(input = './gpx/example.gpx') {
 
@@ -20,34 +20,41 @@ function gpxToStrava(input = './gpx/example.gpx') {
     const stravaGetAuthenticatedUser = require('./strava-get-authenticated-user.js');
     let user = await stravaGetAuthenticatedUser();
 
-    // Form the POST request with form-data
-    const FormData = require('form-data');
-    let form = new FormData();
-    const fs = require('fs');
-
-    form.append("file", fs.createReadStream(input));
-    form.append("name", activityName);
-    form.append("description", activityDesc);
-    form.append("trainer", "false");
-    form.append("commute", "false");
-    form.append("data_type", "gpx");
-
-    let opts = {
-      headers: {
-        'Authorization': 'Bearer ' + user.access_token,
-        ...form.getHeaders()
-      }
-    }
-
-    // Send the POST request
-    const axios = require('axios');
-    const API_ENDPOINT="https://www.strava.com/api/v3/uploads";
-
+    // Attempt to send the activity to Strava.
     try {
-      await axios.post(API_ENDPOINT, form, opts);
-      return resolve({ status: "OK", message: "Activity successfully uploaded to Strava."});
+
+      let result = await uploadGpxToStrava(user.access_token, input, activityName, activityDesc);
+      return resolve(result); // Indicate success to the caller
+
     } catch(error) {
-      return reject({ status: "ERROR", message: error });
+
+      // If the error is an authorisation error, we'll try to refresh the access
+      // token and try one more time, resolving the promise successfully if this
+      // works.
+      if(error.status === 401) {
+
+        try {
+
+          const stravaTokenExchange = require('./strava-token-exchange.js');
+          await stravaTokenExchange(null, user.refresh_token);
+
+          // Get the authenticated user access token again
+          user = await stravaGetAuthenticatedUser();
+
+          let result = await uploadGpxToStrava(user.access_token, input, activityName, activityDesc);
+
+          return resolve(result);
+
+        } catch(retry_error) {
+
+          // If reauthorization fails, return the original authorisation error
+          return reject(error);
+
+        }
+      }
+
+      // Otherwise, just reject the promise with an error
+      return reject(error);
     }
 
   });
@@ -79,6 +86,52 @@ function getGpxFileData(filename) {
     });
 
   });
+}
+
+/**
+ * Attempts to upload a new activity to Strava using a GPX file.
+ * @param  {String} accessToken   The API user's current access token.
+ * @param  {String} filepath      Path to the GPX file that will be uploaded.
+ * @param  {String} activityName  A name for the activity on Strava.
+ * @param  {String} activityDesc  Activity notes for the activity on Strava.
+ * @return {Promise}              Resolves to the http status code and message
+ *                                returned from the Strava API.
+ */
+function uploadGpxToStrava(accessToken, filepath, activityName, activityDesc) {
+
+  return new Promise(function(resolve, reject) {
+
+    // Form the POST request with form-data
+    const FormData = require('form-data');
+    let form = new FormData();
+    const fs = require('fs');
+
+    form.append("file", fs.createReadStream(filepath));
+    form.append("name", activityName);
+    form.append("description", activityDesc);
+    form.append("trainer", "false");
+    form.append("commute", "false");
+    form.append("data_type", "gpx");
+
+    let opts = {
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        ...form.getHeaders()
+      }
+    }
+
+    // Send the POST request
+    const axios = require('axios');
+    const API_ENDPOINT="https://www.strava.com/api/v3/uploads";
+
+    return axios.post(API_ENDPOINT, form, opts).then((response) => {
+      return resolve({ status: response.status, message: response.statusText });
+    }).catch((error) => {
+      return reject({ status: error.response.status, message: error.response.statusText });
+    });
+
+  });
+
 }
 
 module.exports = gpxToStrava;

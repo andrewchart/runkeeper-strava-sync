@@ -32,42 +32,66 @@ function stravaTokenExchange(code=null, refreshToken=null) {
       // Request a token exchange from Strava
       let response = await axios.post(OAUTH_URL, body);
 
-      // Attempt to write the data to a file
-      await writeUser(response.data);
+      // If this is a refresh request, get the name and account ID of the user
+      // from the existing authenticated user json file.
+      let name, account_id;
 
-      resolve({ status: "OK", message: "New user successfully authenticated."});
+      if(refreshToken) {
+        const stravaGetAuthenticatedUser = require('./strava-get-authenticated-user.js');
+        let user = await stravaGetAuthenticatedUser();
+        name = user.name;
+        account_id = user.account_id;
+      }
+
+      // Otherwise, get the name and account ID from the API response
+      else {
+        name = response.data.athlete.firstname + " " + response.data.athlete.lastname;
+        account_id = response.data.athlete.id;
+      }
+
+      // Attempt to write the data to a file
+      await writeUser(
+        name,
+        account_id,
+        response.data.access_token,
+        response.data.refresh_token
+      );
+
+      return resolve({ status: "OK", message: "New user successfully authenticated."});
 
     } catch (error) {
-
-      reject({ status: "ERROR", message: error });
+      
+      return reject({ status: "ERROR", message: error });
 
     }
-
 
   });
 }
 
 /**
- * Takes the response from Strava and writes the relevant properties to a local
- * file.
- * @param  {Object} data  Body of the response object from Strava's auth api.
- * @return {Promise}      Resolves to a success message on successful file write.
+ * Writes details about the authenticated user to a local file.
+ * @param  {String}  name           Name of the authenticated user
+ * @param  {Integer} account_id     Strava account ID for the authenticated user
+ * @param  {[type]}  access_token   Most recent access token for the API
+ * @param  {[type]}  refresh_token  Refresh token used when the access token has
+ *                                  expired.
+ * @return {Promise}                Resolves to a success message on successful
+ *                                  file write.
  */
-function writeUser(data) {
+function writeUser(name, account_id, access_token, refresh_token) {
 
   const fs = require('fs');
-  const filename = "authorised-user-info";
 
   return new Promise(function(resolve, reject) {
 
     // Write the file
     return fs.writeFile(
-      "./strava/" + filename  + ".json",
+      "./strava/authorised-user-info.json",
       JSON.stringify({
-        "name": data.athlete.firstname + " " + data.athlete.lastname,
-        "account_id": data.athlete.id,
-        "access_token": data.access_token,
-        "refresh_token": data.refresh_token
+        "name": name,
+        "account_id": account_id,
+        "access_token": access_token,
+        "refresh_token": refresh_token
       }),
       'utf8',
       function(error) {

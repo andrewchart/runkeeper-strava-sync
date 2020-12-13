@@ -72,7 +72,8 @@ app.get('/gpx-to-strava', (req, res) => {
   const gpxToStrava = require('./modules/gpx-to-strava.js');
   gpxToStrava().then((result) => {
     res.status(200).json({status: 'OK', message: 'Activity successfully uploaded.'})
-  }).catch(function(){
+  }).catch(function(error){
+    console.log(error);
     res.status(500).json({status: 'ERROR', message: 'Unable to upload activity to Strava.'})
   });
 });
