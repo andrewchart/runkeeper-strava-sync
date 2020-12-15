@@ -1,4 +1,6 @@
 /**
+ * strava-token-exchange.js
+ *
  * Takes a successful authorisation code or a refresh token from the Strava
  * OAuth process and privately exchanges it for a new access token and a new
  * refresh token which are stored in the App's filesystem, transiently.
@@ -60,7 +62,7 @@ function stravaTokenExchange(code=null, refreshToken=null) {
       return resolve({ status: "OK", message: "New user successfully authenticated."});
 
     } catch (error) {
-      
+
       return reject({ status: "ERROR", message: error });
 
     }
@@ -72,8 +74,8 @@ function stravaTokenExchange(code=null, refreshToken=null) {
  * Writes details about the authenticated user to a local file.
  * @param  {String}  name           Name of the authenticated user
  * @param  {Integer} account_id     Strava account ID for the authenticated user
- * @param  {[type]}  access_token   Most recent access token for the API
- * @param  {[type]}  refresh_token  Refresh token used when the access token has
+ * @param  {String}  access_token   Most recent access token for the API
+ * @param  {String}  refresh_token  Refresh token used when the access token has
  *                                  expired.
  * @return {Promise}                Resolves to a success message on successful
  *                                  file write.

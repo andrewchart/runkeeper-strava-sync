@@ -1,7 +1,10 @@
 /**
+ * strava-get-authenticated-user.js
+ *
  * Reads the local json file containing information about the currently-
  * authenticated Strava user.
- * @return {Object} An object represented the currently-authenticated user.
+ * @return {Promise} Resolves to an object represented the currently-authenticated
+ *                   user.
  */
 async function stravaGetAuthenticatedUser() {
 

@@ -1,4 +1,6 @@
 /**
+ * strava-auth-view-data.js
+ *
  * Constructs the required data for the strava-auth.ejs view including details
  * of the currently authenticated user (if any) and the Strava Oauth url for
  * authorising this application
