@@ -93,7 +93,7 @@ app.post('/', (req, res) => {
  * This is a page where the app administrator can authorize a Strava account which will
  * receive Runkeeper activities as GPX files via the Strava Uploads API.
  */
-app.use(/^\/strava-auth$/, async (req, res) => {
+app.all(/^\/strava-auth$/, async (req, res) => {
 
   if(
     (req.method === "POST" && req.body.apiKey && req.body.apiKey === process.env.API_KEY) ||
