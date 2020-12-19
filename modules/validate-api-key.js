@@ -7,7 +7,7 @@
  * @return {Boolean}     True if the keys match.
  */
 function validateApiKey(key) {
-  return (key === process.env.API_SECRET);
+  return (key === process.env.API_KEY);
 }
 
 module.exports = validateApiKey;

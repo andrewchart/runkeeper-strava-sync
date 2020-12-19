@@ -23,7 +23,7 @@ const validatePayload = require('./modules/validate-payload.js');
 app.post('/', (req, res) => {
 
   // Check for API Key Integrity
-  if(validateApiKey(req.body.apiSecret) === false) {
+  if(validateApiKey(req.body.apiKey) === false) {
 
     let error = {
       status: 401,
@@ -39,7 +39,7 @@ app.post('/', (req, res) => {
 
   // Create a copy of the body without the API details in it
   let data = req.body;
-  delete data.apiSecret;
+  delete data.apiKey;
   delete data.apiEndpoint;
 
   // Check the payload
@@ -96,8 +96,8 @@ app.post('/', (req, res) => {
 app.use(/^\/strava-auth$/, async (req, res) => {
 
   if(
-    (req.method === "POST" && req.body.apiSecret && req.body.apiSecret === process.env.API_SECRET) ||
-    (req.method === "GET" && req.query.apiSecret && req.query.apiSecret === process.env.API_SECRET)
+    (req.method === "POST" && req.body.apiKey && req.body.apiKey === process.env.API_KEY) ||
+    (req.method === "GET" && req.query.apiKey && req.query.apiKey === process.env.API_KEY)
   ) {
 
     const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
@@ -108,10 +108,10 @@ app.use(/^\/strava-auth$/, async (req, res) => {
   }
 
   else if(
-    (req.method === "POST" && (!req.body.apiSecret || req.body.apiSecret !== process.env.API_SECRET)) ||
-    (req.method === "GET" && (req.query.apiSecret && req.query.apiSecret !== process.env.API_SECRET))
+    (req.method === "POST" && (!req.body.apiKey || req.body.apiKey !== process.env.API_KEY)) ||
+    (req.method === "GET" && (req.query.apiKey && req.query.apiKey !== process.env.API_KEY))
   ) {
-    res.render('login', { message: "Incorrect API Secret." });
+    res.render('login', { message: "Incorrect API Key." });
   }
 
   else {
@@ -129,7 +129,7 @@ app.get('/strava-auth/callback', (req, res) => {
 
   // The API key should be passed back in the state so we know the authorisation
   // was made by someone who has the credentials for this instance of the application.
-  if(req.query.state !== process.env.API_SECRET) {
+  if(req.query.state !== process.env.API_KEY) {
 
     let error = {
       status: 401,
@@ -146,7 +146,7 @@ app.get('/strava-auth/callback', (req, res) => {
 
     // On success, just redirect back to the OAuth page which will now show the
     // details of the authenticated user.
-    res.redirect(301, '/strava-auth?apiSecret=' + encodeURIComponent(req.query.state));
+    res.redirect(301, '/strava-auth?apiKey=' + encodeURIComponent(req.query.state));
 
   }).catch((err) => {
 

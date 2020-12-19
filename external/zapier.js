@@ -16,10 +16,10 @@
  * - activityPathTimestamp
  * - activityPathType
  * - apiEndpoint
- * - apiSecret
+ * - apiKey
  */
 const API_ENDPOINT = inputData.apiEndpoint || null;
-const API_SECRET = inputData.apiSecret || null;
+const API_KEY = inputData.apiKey || null;
 
 // Send the payload
 const res = await fetch(API_ENDPOINT, {
