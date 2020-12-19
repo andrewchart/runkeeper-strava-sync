@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '6mb' }));
 app.use(express.urlencoded({ extended: true, limit: '6mb' }));
+app.enable('trust proxy', true);
 
 app.set('view engine', 'ejs');
 
