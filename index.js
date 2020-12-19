@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+// Setup Express
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,11 +10,31 @@ app.use(express.urlencoded({ extended: true, limit: '6mb' }));
 
 app.set('view engine', 'ejs');
 
+// Custom functions
+const log = require('./modules/logger.js');
+const queueJsonForProcessing = require('./modules/queue-json-for-processing.js');
+const saveJson = require('./modules/save-json.js');
+const validateApiKey = require('./modules/validate-api-key.js');
+const validatePayload = require('./modules/validate-payload.js');
+
+/**
+ * React to incoming json data POSTed to the root from Runkeeper (via Zapier).
+ */
 app.post('/', (req, res) => {
 
   // Check for API Key Integrity
-  if(req.body.apiSecret !== process.env.API_SECRET) {
-    return res.status(403).json({status: 'ERROR', message: 'Invalid API Key.'});
+  if(validateApiKey(req.body.apiSecret) === false) {
+
+    let error = {
+      status: 401,
+      message: 'Unauthorized',
+      details: 'ERROR: Invalid API key.'
+    };
+
+    log(error);
+
+    return res.status(error.status).json(error);
+
   }
 
   // Create a copy of the body without the API details in it
@@ -22,34 +43,59 @@ app.post('/', (req, res) => {
   delete data.apiEndpoint;
 
   // Check the payload
-  const validatePayload = require('./modules/validate-payload.js');
   if(validatePayload(data) === false) {
-    return res.status(400).json({status: 'ERROR', message: 'Invalid input data.'});
+    let error = {
+      status: 400,
+      message: 'Bad Request',
+      details: 'ERROR: Invalid input data.'
+    };
+
+    log(error);
+
+    return res.status(error.status).json(error);
+
   }
 
-  // Save the json to a file for asynchronous processing
-  const saveJson = require('./modules/save-json.js');
-  saveJson(data).then(function() {
-    res.status(200).json({status: 'OK', message: 'OK.'});
-  }).catch(function() {
-    res.status(500).json({status: 'ERROR', message: 'Could not write file.'});
+  // Save the json to a file the queue for asynchronous processing
+  saveJson(data).then((jsonFilename) => {
+
+    queueJsonForProcessing(jsonFilename);
+
+    let response = {
+      status: 200,
+      message: 'OK',
+      details: 'JSON data successfully saved. Processing will be attempted shortly.'
+    };
+
+    res.status(response.status).json(response);
+
+  }).catch((err) => {
+
+    let error = {
+      status: 500,
+      message: 'Internal Server Error',
+      details: `ERROR: ${err.message}`
+    }
+
+    log(error);
+
+    delete error.details; // Don't expose server error to caller
+
+    res.status(error.status).json(error);
+
   });
 
 });
 
-app.get('/json-to-gpx', (req,res) => {
 
-  const jsonToGpx = require('./modules/json-to-gpx.js');
-
-  jsonToGpx('json/example.json').then(function() {
-    res.status(200).json({status: 'OK', message: 'JSON converted to GPX.'});
-  }).catch(function() {
-    res.status(500).json({status: 'ERROR', message: 'Could not convert JSON to GPX.'});
-  });
-
-});
-
+/**
+ * Strava OAuth Page:
+ * This is a page where the app administrator can authorize a Strava account which will
+ * receive Runkeeper activities as GPX files via the Strava Uploads API.
+ */
 app.get('/strava-auth', async (req, res) => {
+
+  //TODO: Add login to this page
 
   const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
   let data = await stravaAuthViewData(req);
@@ -57,31 +103,50 @@ app.get('/strava-auth', async (req, res) => {
   res.render('strava-auth', { data: data });
 });
 
+/**
+ * OAuth Callback Page:
+ * When authorization is granted to a Strava account, this function handles the
+ * callback and subsequent token exchange.
+ */
 app.get('/strava-auth/callback', async (req, res) => {
 
   const stravaTokenExchange = require('./modules/strava-token-exchange.js');
   stravaTokenExchange(req.query.code).then((result) => {
+
+    // On success, just redirect back to the OAuth page which will now show the
+    // details of the authenticated user.
     res.redirect(301, '/strava-auth');
-  }).catch(function(){
-    res.status(500).json({status: 'Error', message: 'Unable to grant application access to Strava account.'})
+
+  }).catch((err) => {
+
+    let error = {
+      status: 500,
+      message: 'Internal Server Error',
+      details: `ERROR: ${err.message}`
+    }
+
+    log(error);
+
+    delete error.details; // Don't expose server error to caller
+
+    res.status(error.status).json(error);
+
   });
 
 });
 
-app.get('/gpx-to-strava', (req, res) => {
-  const gpxToStrava = require('./modules/gpx-to-strava.js');
-  gpxToStrava().then((result) => {
-    res.status(200).json({status: 'OK', message: 'Activity successfully uploaded.'})
-  }).catch(function(error){
-    console.log(error);
-    res.status(500).json({status: 'ERROR', message: 'Unable to upload activity to Strava.'})
-  });
-});
 
+/**
+ * All other routes should 404
+ */
 app.all('*', (req, res) => {
-  res.status(404).json({status: 'ERROR', message: 'Not Found'})
+  res.status(404).json({ status: 404, message: 'Not Found', details: 'Page not found.' });
 });
 
+
+/**
+ * Start the server
+ */
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Example app listening on port ${port}`);
 });

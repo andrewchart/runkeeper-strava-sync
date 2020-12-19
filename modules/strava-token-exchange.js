@@ -10,7 +10,7 @@
  *                                when the old one has expired.
  * @return {Promise}              Resolves to an object containing a status message
  */
-function stravaTokenExchange(code=null, refreshToken=null) {
+function stravaTokenExchange(code='', refreshToken='') {
 
   const axios = require('axios');
 
@@ -18,19 +18,17 @@ function stravaTokenExchange(code=null, refreshToken=null) {
 
   return new Promise(async (resolve, reject) => {
 
-    // Reject if there's no code
-    if(!code && !refreshToken) reject({ status: "ERROR", message: "No code or refresh token provided." });
-
-    // Body for POST request
-    let body = {
-      client_id: process.env.STRAVA_CLIENT_ID,
-      client_secret: process.env.STRAVA_CLIENT_SECRET,
-      code: code,
-      refresh_token: refreshToken,
-      grant_type: (code ? 'authorization_code' : 'refresh_token')
-    };
-
     try {
+
+      // Body for POST request
+      let body = {
+        client_id: process.env.STRAVA_CLIENT_ID,
+        client_secret: process.env.STRAVA_CLIENT_SECRET,
+        code: code,
+        refresh_token: refreshToken,
+        grant_type: (code.length > 0 ? 'authorization_code' : 'refresh_token')
+      };
+
       // Request a token exchange from Strava
       let response = await axios.post(OAUTH_URL, body);
 
@@ -59,11 +57,11 @@ function stravaTokenExchange(code=null, refreshToken=null) {
         response.data.refresh_token
       );
 
-      return resolve({ status: "OK", message: "New user successfully authenticated."});
+      return resolve("New user successfully authenticated.");
 
     } catch (error) {
 
-      return reject({ status: "ERROR", message: error });
+      return reject(error);
 
     }
 
@@ -72,9 +70,9 @@ function stravaTokenExchange(code=null, refreshToken=null) {
 
 /**
  * Writes details about the authenticated user to a local file.
- * @param  {String}  name           Name of the authenticated user
- * @param  {Integer} account_id     Strava account ID for the authenticated user
- * @param  {String}  access_token   Most recent access token for the API
+ * @param  {String}  name           Name of the authenticated user.
+ * @param  {Integer} account_id     Strava account ID for the authenticated user.
+ * @param  {String}  access_token   Most recent access token for the API.
  * @param  {String}  refresh_token  Refresh token used when the access token has
  *                                  expired.
  * @return {Promise}                Resolves to a success message on successful

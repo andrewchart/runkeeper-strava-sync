@@ -2,49 +2,44 @@
  * json-to-gpx.js
  *
  * Converts a json file to a gpx file
- * @param  {String} input Reference to input filename including path
- * @return {Promise}      Resolves to a success message if the JSON in the file
- *                        is successfully converted to GPX.
+ * @param  {String} filePath Reference to input filename including path.
+ * @return {Promise}         Resolves to the filename of the created GPX file on
+ *                           success.
  */
-function jsonToGpx(input) {
+function jsonToGpx(filePath) {
   fs = require('fs');
   xml2js = require('xml2js');
 
   return new Promise(function(resolve, reject) {
 
-    return fs.readFile(input, 'utf8', async function(error, data) {
+    return fs.readFile(filePath, 'utf8', async function(error, data) {
 
-      // Parse the json to an object
-      if (error) {
-        console.error(error);
-        return reject({ message: "Could not read file" });
+      if (error) return reject(error);
+
+      try {
+
+        // Parse the json to an object
+        var json = JSON.parse(data);
+
+        // Check the object for the expected keys
+        const validatePayload = require('./validate-payload.js');
+        if(validatePayload(json) === false) throw new Error("Invalid json supplied to jsonToGpx.");
+
+        // Fetch the data template for the GPX file as a javascript object
+        let template = await getJsTemplate();
+
+        // Populate the javascript template with data from the input (as json),
+        // resulting in a final javascript object from which to construct the
+        // output xml.
+        let result = populateTemplate(template, json);
+
+        // Convert the result back to XML and write to disk.
+        let gpxFilename = await saveGpx(result);
+        return resolve(gpxFilename);
+
+      } catch(error) {
+        return reject(error);
       }
-
-      var json = JSON.parse(data);
-
-      // Check the object for the expected keys
-      const validatePayload = require('./validate-payload.js');
-      if(validatePayload(json) === false) {
-        return reject({ message: "JSON file does not contain expected data" });
-      }
-
-      // Fetch the data template for the GPX file as a javascript object
-      let template = await getJsTemplate();
-      if(!template) {
-        return reject({ message: "Could not get data template" });
-      }
-
-      // Populate the javascript template with data from the input (as json),
-      // resulting in a final javascript object from which to construct the
-      // output xml.
-      result = populateTemplate(template, json);
-
-      // Convert the result back to XML and write to disk.
-      saveGpx(result).then(function() {
-        return resolve({ message: "JSON successfully converted to GPX" });
-      }).catch(function() {
-        return reject({ message: "Could not save GPX file to filesystem." });
-      });
 
     });
 
@@ -63,13 +58,18 @@ function getJsTemplate() {
   var parser = new xml2js.Parser();
 
   return new Promise(function(resolve, reject) {
+
     return fs.readFile('./gpx/template.gpx', function(error, data) {
-      parser.parseString(data, function (error, obj) {
-       if(error) return reject({ message: "Could not convert GPX template to javascript" });
-       return resolve(obj);
+
+      if(error) return reject(error);
+
+      return parser.parseString(data, function (error, obj) {
+        if(error) return reject(error);
+        return resolve(obj);
       });
 
     });
+
   });
 
 }
@@ -77,7 +77,7 @@ function getJsTemplate() {
 /**
  * Takes the javascript object representing the GPX template, and appends actual
  * activity data to the object, based upon the input data from the json file.
- * @param  {Object} jsTemplate  Javascript representation of the GPX template
+ * @param  {Object} jsTemplate  Javascript representation of the GPX template.
  * @param  {Object} data        Data about the activity including waypoints and
  *                              activity start time in UTC format.
  * @return {Object}             Returns the populated gpx data for conversion
@@ -162,20 +162,20 @@ function parseWaypoints(data) {
 /**
  * Converts the populated javascript object into a string of XML then aaves the
  * XML in GPX format, to a file in the filesystem.
- * @param  {Object} jsTemplate Completed object containing activity data
- * @return {Promise}           Resolves to a success message upon successful
- *                             writing of the file to the filesystem.
+ * @param  {Object} jsTemplate Completed object containing activity data.
+ * @return {Promise}           Resolves to a string containing the filename that
+ *                             was written to the filesystem.
  */
 function saveGpx(jsTemplate) {
 
-  // Get a filename from the activity date
-  const dateToFilename = require('./date-to-filename.js');
-  const filename = dateToFilename(jsTemplate.gpx.metadata[0].time);
-
-  // Don't allow writing of empty filenames
-  if(filename.length === 0) return reject({ message: "Filename cannot be empty" });
-
   return new Promise(function(resolve, reject) {
+
+    // Get a filename from the activity date
+    const dateToFilename = require('./date-to-filename.js');
+    var filename = dateToFilename(jsTemplate.gpx.metadata[0].time) + '.gpx';
+
+    // Don't allow writing of empty filenames
+    if(filename.length === 0) return reject(new Error("Filename cannot be empty"));
 
     // Convert JS to XML
     var builder = new xml2js.Builder({
@@ -186,12 +186,12 @@ function saveGpx(jsTemplate) {
 
     // Write the file
     return fs.writeFile(
-      "./gpx/" + filename  + ".gpx",
+      "./gpx/" + filename,
       xml,
       'utf8',
       function(error) {
-        if(error) return reject({ message: error });
-        return resolve({ message: "GPX file successfully written" });
+        if(error) return reject(error);
+        return resolve(filename);
       }
     );
 
