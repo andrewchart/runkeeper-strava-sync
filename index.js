@@ -103,7 +103,7 @@ app.all(/^\/strava-auth$/, async (req, res) => {
     const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
     let data = await stravaAuthViewData(req);
 
-    res.render('strava-auth', { data: data });
+    res.render('strava-auth', { data: data, req: req });
 
   }
 
