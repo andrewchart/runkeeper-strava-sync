@@ -95,6 +95,8 @@ app.post('/', (req, res) => {
  */
 app.use(/^\/strava-auth$/, async (req, res) => {
 
+  res.json(req);
+
   if(
     (req.method === "POST" && req.body.apiKey && req.body.apiKey === process.env.API_KEY) ||
     (req.method === "GET" && req.query.apiKey && req.query.apiKey === process.env.API_KEY)
