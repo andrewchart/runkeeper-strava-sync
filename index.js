@@ -93,14 +93,31 @@ app.post('/', (req, res) => {
  * This is a page where the app administrator can authorize a Strava account which will
  * receive Runkeeper activities as GPX files via the Strava Uploads API.
  */
-app.get('/strava-auth', async (req, res) => {
+app.use(/^\/strava-auth$/, async (req, res) => {
 
-  //TODO: Add login to this page
+  if(
+    (req.method === "POST" && req.body.apiSecret && req.body.apiSecret === process.env.API_SECRET) ||
+    (req.method === "GET" && req.query.apiSecret && req.query.apiSecret === process.env.API_SECRET)
+  ) {
 
-  const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
-  let data = await stravaAuthViewData(req);
+    const stravaAuthViewData = require('./modules/strava-auth-view-data.js');
+    let data = await stravaAuthViewData(req);
 
-  res.render('strava-auth', { data: data });
+    res.render('strava-auth', { data: data });
+
+  }
+
+  else if(
+    (req.method === "POST" && (!req.body.apiSecret || req.body.apiSecret !== process.env.API_SECRET)) ||
+    (req.method === "GET" && (req.query.apiSecret && req.query.apiSecret !== process.env.API_SECRET))
+  ) {
+    res.render('login', { message: "Incorrect API Secret." });
+  }
+
+  else {
+    res.render('login', { message: "" });
+  }
+
 });
 
 /**
@@ -108,14 +125,28 @@ app.get('/strava-auth', async (req, res) => {
  * When authorization is granted to a Strava account, this function handles the
  * callback and subsequent token exchange.
  */
-app.get('/strava-auth/callback', async (req, res) => {
+app.get('/strava-auth/callback', (req, res) => {
 
+  // The API key should be passed back in the state so we know the authorisation
+  // was made by someone who has the credentials for this instance of the application.
+  if(req.query.state !== process.env.API_SECRET) {
+
+    let error = {
+      status: 401,
+      message: 'Unauthorized',
+      details: 'ERROR: Invalid API key. Could not authorize Strava account'
+    }
+
+    return res.status(error.status).json(error);
+  }
+
+  // Attempt to exchange the callback code for a Strava authorisation token
   const stravaTokenExchange = require('./modules/strava-token-exchange.js');
   stravaTokenExchange(req.query.code).then((result) => {
 
     // On success, just redirect back to the OAuth page which will now show the
     // details of the authenticated user.
-    res.redirect(301, '/strava-auth');
+    res.redirect(301, '/strava-auth?apiSecret=' + encodeURIComponent(req.query.state));
 
   }).catch((err) => {
 

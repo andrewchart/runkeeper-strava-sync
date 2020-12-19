@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <style>
+      * {
+        margin: 0;
+        padding:0;
+        font-family: sans-serif;
+      }
+
+      body {
+        max-width: 600px;
+        line-height: 150%;
+      }
+
+      h1, p, input, label {
+        padding: 0.5em 12px;
+      }
+
+      input[type="submit"] {
+        margin: 12px 0 0 12px;
+        background-color: #ff7615;
+        color: #111;
+        font-weight: bold;
+      }
+
+      .error {
+        color: #c00;
+        font-weight: bold;
+        margin-top: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <p>Use the API Secret for this app to log in and authorise a Strava account.</p>
+
+    <form method="post" action="/strava-auth">
+      <label for="apiSecret">
+        API Secret:
+        <input type="password" name="apiSecret" />
+      </label>
+      <input type="submit" name="submit" value="Submit">
+    </form>
+
+    <p class="error"><%= message %></p>
+
+  </body>
+</html>

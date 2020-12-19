@@ -22,7 +22,8 @@ async function stravaAuthViewData(req) {
       ),
       response_type: 'code',
       approval_prompt: 'auto',
-      scope: 'activity:write'
+      scope: 'activity:write',
+      state: encodeURIComponent(process.env.API_SECRET) // Send the API key for use in the callback
     }
 
     // Retrieve information of the currently authenticated user, for the view
