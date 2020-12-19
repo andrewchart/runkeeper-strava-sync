@@ -18,7 +18,7 @@ async function stravaAuthViewData(req) {
     const query = {
       client_id: process.env.STRAVA_CLIENT_ID,
       redirect_uri: encodeURIComponent(
-        req.protocol + '://' + req.headers.host + '/strava-auth/callback'
+        'http' + (req.secure ? 's' : '') + '://' + req.headers.host + '/strava-auth/callback'
       ),
       response_type: 'code',
       approval_prompt: 'auto',
