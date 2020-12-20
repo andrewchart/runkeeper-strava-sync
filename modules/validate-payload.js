@@ -10,7 +10,7 @@ function validatePayload(data) {
   let expectedKeys = [
     'activityType',
     'activityStartTimeIso',
-    'activityNotes',
+    //'activityNotes', // Optional
     'activityPathLatitude',
     'activityPathLongitude',
     'activityPathAltitude',
