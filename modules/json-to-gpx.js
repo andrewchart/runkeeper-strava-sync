@@ -94,6 +94,10 @@ function populateTemplate(jsTemplate, data) {
       .tz(data.activityStartTimeIso, "Europe/London")
       .format("[" + data.activityType + " activity on] dddd Do MMMM [at] HH:mm");
 
+  // Activity type
+  const mapActivityType = require('./map-activity-type.js');
+  jsTemplate.gpx.trk[0].type = mapActivityType(data.activityType);
+
   // Activity notes
   jsTemplate.gpx.metadata[0].desc = data.activityNotes;
 

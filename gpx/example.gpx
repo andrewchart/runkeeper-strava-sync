@@ -6,6 +6,7 @@
     <time>2020-11-29T12:52:29Z</time>
   </metadata>
   <trk>
+    <type>Run</type>
     <trkseg>
       <trkpt lat="51.25359" lon="-0.589077">
         <ele>49.833333333333336</ele>
