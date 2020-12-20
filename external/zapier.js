@@ -9,7 +9,7 @@
  * Expected keys are as per '../modules/validate-payload.js':
  * - activityType
  * - activityStartTimeIso
- * - activityNotes
+ * - activityNotes (optional)
  * - activityPathLatitude
  * - activityPathLongitude
  * - activityPathAltitude
@@ -18,6 +18,7 @@
  * - apiEndpoint
  * - apiKey
  */
+if(!inputData.activityNotes) inputData.activityNotes="";
 const API_ENDPOINT = inputData.apiEndpoint || null;
 const API_KEY = inputData.apiKey || null;
 

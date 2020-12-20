@@ -2,8 +2,8 @@
  * validate-payload.js
  *
  * Validates the inbound json data which is POSTed to the API
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
+ * @param  {Object}  data Object representing incoming data from Runkeeper.
+ * @return {Boolean}      True if the data is valid, otherwise false.
  */
 function validatePayload(data) {
 
