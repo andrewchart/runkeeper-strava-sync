@@ -172,7 +172,19 @@ app.get('/strava-auth/callback', (req, res) => {
  *
  */
 app.get('/ping', (req, res) => {
-  res.status(200).json({ status: 200, message: 'OK', details: 'Hello.'});
+
+  const log = require('./modules/logger.js');
+
+  let response = {
+    status: 200,
+    message: 'OK',
+    details: 'Hello.'
+  }
+
+  log(response);
+
+  res.status(200).json(response);
+  
 });
 
 /**
