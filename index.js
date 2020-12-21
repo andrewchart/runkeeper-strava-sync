@@ -169,6 +169,13 @@ app.get('/strava-auth/callback', (req, res) => {
 
 
 /**
+ *
+ */
+app.get('/ping', (req, res) => {
+  res.status(200).json({ status: 200, message: 'OK', details: 'Hello.'});
+});
+
+/**
  * All other routes should 404
  */
 app.all('*', (req, res) => {
