@@ -141,8 +141,8 @@ function parseWaypoints(data) {
   // Iterate over the waypoints
   pathTypes.forEach((point, i) => {
 
-    // Start a new segment for waypoints marked "start"
-    if(point === 'start') {
+    // Start a new segment for waypoints marked "start" or "resume"
+    if(point === 'start' || point === 'resume') {
       trkseg.push({ trkpt: [] });
       trksegCounter++;
     }
