@@ -4,7 +4,7 @@
  * This JS is run by Zapier in response to a new Runkeeper activity The code
  * below runs in an async function
  *
- * inoutData: JSON object containing all the data provided by the zap to the code step.
+ * inputData: JSON object containing all the data provided by the zap to the code step.
  *
  * Expected keys are as per '../modules/validate-payload.js':
  * - activityType
