@@ -19,9 +19,9 @@
  * So I came to this; ping the service on a cron to keep it alive. I set up a
  * NodeJS serverless function environment, and created this function on a timer.
  *
- * The crontab value I selected (for a "Western Europe" server, taking into 
+ * The crontab value I selected (for a "Western Europe" server, taking into
  * account the fact I reside in the London GMT timezone that adjusts for British
- * summer time) was: 0 *\/30 6-22 * * *
+ * summer time) was: 0 *\/20 6-22 * * *
  *
  */
 module.exports = async function () {
