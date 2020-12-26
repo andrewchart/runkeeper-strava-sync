@@ -21,13 +21,13 @@
  *
  * The crontab value I selected (for a "Western Europe" server, taking into
  * account the fact I reside in the London GMT timezone that adjusts for British
- * summer time) was: 0 *\/20 6-22 * * *
+ * summer time) was: 0 *\/30 6-22 * * *
  *
  */
 module.exports = async function () {
     const https = require('https');
 
-    https.get('https://runkeeper-strava-sync.azurewebsites.net/ping', (res) => {
+    https.get('https://runkeeper-strava-sync.azurewebsites.net/', (res) => {
         return res;
     });
 };

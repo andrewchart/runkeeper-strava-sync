@@ -183,9 +183,7 @@ app.get('/', (req, res) => {
     message: 'OK',
     details: 'Ping pong! The app is awake.'
   }
-
-  log(response);
-
+  
   res.status(200).json(response);
 
 });
