@@ -169,22 +169,25 @@ app.get('/strava-auth/callback', (req, res) => {
 
 
 /**
- *
+ * Respond to a GET request for the root. This endpoint can be requested from
+ * an external service e.g. via the serverless script in
+ * ./external/runkeeper-strava-sync-ping.js to keep the app awake, ready to
+ * receive JSON data throughout the day.
  */
-app.get('/ping', (req, res) => {
+app.get('/', (req, res) => {
 
   const log = require('./modules/logger.js');
 
   let response = {
     status: 200,
     message: 'OK',
-    details: 'Hello.'
+    details: 'Ping pong! The app is awake.'
   }
 
   log(response);
 
   res.status(200).json(response);
-  
+
 });
 
 /**
