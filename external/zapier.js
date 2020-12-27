@@ -1,7 +1,7 @@
 /**
  * zapier.js
  *
- * This JS is run by Zapier in response to a new Runkeeper activity The code
+ * This JS is run by Zapier in response to a new Runkeeper activity. The code
  * below runs in an async function
  *
  * inputData: JSON object containing all the data provided by the zap to the code step.
