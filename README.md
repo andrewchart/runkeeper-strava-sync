@@ -1,12 +1,12 @@
 # runkeeper-strava-sync
-**These scripts are designed to receive GPS data about individual exercise activities from [Runkeeper](https://runkeeper.com/), convert it to [GPX](https://www.topografix.com/GPX/1/1/) format, then upload it to [Strava](https://strava.com) as a new activity.**
+These scripts are designed to receive GPS data about individual exercise activities from [Runkeeper](https://runkeeper.com/), convert it to [GPX](https://www.topografix.com/GPX/1/1/) format, then upload it to [Strava](https://strava.com) as a new activity.
 
 ## Overview
 Running in a NodeJS environment, an Express server is set up to listen for incoming requests over http. The app contains an authentication view where the user can authorise the app to send activities to the Strava account of their choice.
 
 An external service (in this case, [Zapier](https://zapier.com)) receives Webhook notifications when a new activity is recorded in Runkeeper.
 
-Zapier then executes a script which sends `post` request with a payload of data to this app. The Zapier script ([/external/zapier.js](external/zapier.js)) uses `fetch` to send a payload of JSON to the express server.
+Zapier then executes a script which sends `post` request with a payload of data to this app. The Zapier script ([external/zapier.js](./external/zapier.js)) uses `fetch` to send a payload of JSON to the express server.
 
 The server saves the JSON locally, queues a function to process the data, then responds to Zapier with a relevant status code.
 
@@ -38,22 +38,22 @@ _This app can easily be deployed to an app service environment like Azure App Se
 2. Authenticate your Runkeeper account, allowing Zapier to listen for new activities
 3. Create a new **Zap** with _New Activity in Runkeeper_ as the trigger, and a _Code By Zapier_ action step
 4. Set up the zap to pass the Runkeeper Data into the code step as variables.
-   - Each data is passed as a key in an object called `inputData`.
-   - See [modules/validate-payload.js](modules/validate-payload.js) for the expected keys. These are camelCased versions of what Zapier calls the data coming from Runkeeper.
-   - The screenshot below should give you an idea of how this should look when finished.
+    - Each data is passed as a key in an object called `inputData`.
+    - See [modules/validate-payload.js](./modules/validate-payload.js) for the expected keys. These are camelCased versions of what Zapier calls the data coming from Runkeeper.
+    - The screenshot below should give you an idea of how this should look when finished.
 5. Additionally, specify the `API_KEY` from `.env` and the url where you hosted this app as `apiKey` and `apiEndpoint` respectively.
-6. Set up the code step to run the script in [external/zapier.js](external/zapier.js) and turn on the zap.
+6. Set up the code step to run the script in [external/zapier.js](./external/zapier.js) and turn on the zap.
 
 _Once you're done, the Zap should look something like this:_
 
-![Image of Zapier setup for the Runkeeper Strava Sync app](external/zapier-setup.png)
+![Image of Zapier setup for the Runkeeper Strava Sync app](./external/zapier-setup.png)
 
 
 
 ## Usage
 Once the app is running, to use the app, you must first authenticate a single Strava account. Visit the url, `/strava-auth` to do this, then enter your `API_KEY` string. Protecting the OAuth process using the app's key in this way means that the public cannot control which Strava account is authenticated for use by your instance of the app.
 
-Once a Strava account is authenticated, Zapier should be able to send the data in a `post` request to the root url (`/`). The expected payload is described in [json/example.json](json/example.json) and [modules/validate-payload.js](modules/validate-payload.js). Again, this must be accompanied by the key (specified in the Zapier step above) to work.
+Once a Strava account is authenticated, Zapier should be able to send the data in a `post` request to the root url (`/`). The expected payload is described in [json/example.json](./json/example.json) and [modules/validate-payload.js](./modules/validate-payload.js). Again, this must be accompanied by the key (specified in the Zapier step above) to work.
 
 With the Zap on, you should find that a new Runkeeper actvity triggers the zap, sends the data to this app, and results in a new activity being created in the authenticated Strava account.
 
@@ -97,4 +97,4 @@ I personally set this app up on a free instance on Microsoft Azure App Service, 
 
 Since the app is only used 1-2 times per day maximum, in order to ensure the app always responds quickly enough to Zapier whenever I record a new exercise activity, I set up this script to occasionally "ping" the app to keep it in memory at Azure, and keep the response time low.
 
-The script [external/runkeeper-strava-sync.js](external/runkeeper-strava-sync.js) is an example of how this "ping" can be automated using a cron job in a serverless code environment. In my case I've used Azure Functions to run this script.
+The script [external/runkeeper-strava-sync-ping.js](./external/runkeeper-strava-sync-ping.js) is an example of how this "ping" can be automated using a cron job in a serverless code environment. In my case I've used Azure Functions to run this script.
