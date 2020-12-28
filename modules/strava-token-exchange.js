@@ -81,12 +81,13 @@ function stravaTokenExchange(code='', refreshToken='') {
 function writeUser(name, account_id, access_token, refresh_token) {
 
   const fs = require('fs');
+  const path = require('path');
 
   return new Promise(function(resolve, reject) {
 
     // Write the file
     return fs.writeFile(
-      "./strava/authorised-user-info.json",
+      path.resolve(__dirname, '../strava/authorised-user-info.json'),
       JSON.stringify({
         "name": name,
         "account_id": account_id,

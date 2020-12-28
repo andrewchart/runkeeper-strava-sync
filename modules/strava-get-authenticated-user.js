@@ -9,10 +9,10 @@
 async function stravaGetAuthenticatedUser() {
 
   const fs = require('fs');
+  const path = require('path');
 
   return new Promise((resolve, reject) => {
-
-    return fs.readFile('./strava/authorised-user-info.json', { encoding: 'utf8', flag: 'a+' }, (error, data) => {
+    return fs.readFile(path.resolve(__dirname, '../strava/authorised-user-info.json'), { encoding: 'utf8', flag: 'a+' }, (error, data) => {
 
       if(error) return reject({ error: error });
 

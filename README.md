@@ -90,6 +90,17 @@ _The following describes the folder structure of this application:_
     ├── LICENSE
     └── README.md
 
+### Batch Upload Script
+Included in the repository is a batch upload script [external/batch-upload-gpx.js](./external/batch-upload-gpx.js) designed for CLI use. This script allows you to batch upload multiple GPX files to Strava in one go.
+
+Note that you must authenticate the main app to connect to a Strava account before using the script. You can do this by starting the main app and visiting `/strava-auth` in your browser.
+
+Example usage:
+```
+$ cd external
+$ node batch-upload-gpx.js /path/to/directory_containing_gpx_files
+```
+
 ### External Ping App
 Within the repo there is an example of an external script which can be run to "ping" the main app. The purpose of this is to keep the app "awake" when it is hosted in a volatile environment.
 
