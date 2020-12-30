@@ -92,7 +92,7 @@ function populateTemplate(jsTemplate, data) {
   // Construct a friendly name for the activity from London time
   jsTemplate.gpx.metadata[0].name = moment
       .tz(data.activityStartTimeIso, "Europe/London")
-      .format("[" + data.activityType + " activity on] dddd Do MMMM [at] HH:mm");
+      .format("[" + data.activityType + " activity on] dddd Do MMMM YYYY [at] HH:mm");
 
   // Activity type
   const mapActivityType = require('./map-activity-type.js');
