@@ -127,7 +127,7 @@ function parseWaypoints(data) {
   // the waypoint to (zero index).
   let trksegCounter = -1;
 
-  // Convery the activity PathType, PathLongitude, PathLatitude, PathAltitude
+  // Convert the activity PathType, PathLongitude, PathLatitude, PathAltitude
   // and PathTimestamp data (csv strings) into arrays. The data in the arrays
   // will be assumed to have array indexes which 'line up' to form a waypoint
   // (trkpt XML node).
@@ -136,10 +136,39 @@ function parseWaypoints(data) {
   pathLongitudes = data.activityPathLongitude.split(',');
   pathLatitudes = data.activityPathLatitude.split(',');
   pathAltitudes = data.activityPathAltitude.split(',')
-  pathTimestamps = data.activityPathTimestamp.split(',');
+  pathTimestamps = data.activityPathTimestamp.split(',').map(a => parseFloat(a));
+
+  // If we have received optional heart rate data, convert these into their own
+  // arrays. There is one array for the timestamp, and one for the BPM. Again,
+  // we have to assume the indexes line up and the entries come in time order.
+  let hasHeartRateData = false, heartRateTimestamps, heartRateBpms;
+  if(
+    typeof data.activityHeartRateTimestamp === 'string'
+    && typeof data.activityHeartRateBpm === 'string'
+  ) {
+    hasHeartRateData = true;
+    heartRateTimestamps = data.activityHeartRateTimestamp.split(',').map(a => parseFloat(a));
+    heartRateBpms = data.activityHeartRateBpm.split(',').map(a => parseInt(a));
+  }
 
   // Iterate over the waypoints
   pathTypes.forEach((point, i) => {
+
+    // If we have heart rate data, construct the extended data for the waypoint
+    let extensions = null;
+    if(hasHeartRateData === true) {
+      extensions = {
+        'extensions' : {
+          'gpxtpx:TrackPointExtension' : {
+            'gpxtpx:hr': getNearestHeartRateMeasurement(
+              pathTimestamps[i], 
+              heartRateTimestamps, 
+              heartRateBpms
+            )
+          }
+        }
+      }
+    }
 
     // Start a new segment for waypoints marked "start" or "resume"
     if(point === 'start' || point === 'resume') {
@@ -147,21 +176,70 @@ function parseWaypoints(data) {
       trksegCounter++;
     }
 
-    // Record the point within the trkseg segment. Note that the timestamp is
-    // UTC, relative to the start time.
-    trkseg[trksegCounter].trkpt.push({
+    // Construct data for the point within the trkseg segment. Note that the 
+    // timestamp is UTC, relative to the start time.
+    let trkptData = {
       '$': {
         lat: pathLatitudes[i],
         lon: pathLongitudes[i]
       },
       'ele': pathAltitudes[i],
       'time': moment.utc(data.activityStartTimeIso).add(pathTimestamps[i], 'seconds').format()
-    });
+    }
+
+    // Append the extension data to the trkpt. Object.assign means we won't 
+    // send an empty node when there is no extention data (as it skips over 
+    // the null)
+    trkptData = Object.assign(trkptData, extensions);
+
+    // Add the track point to the segment
+    trkseg[trksegCounter].trkpt.push(trkptData);
 
   });
 
   return trkseg;
 }
+
+/**
+ * Get the heart rate measurement (in beats per minute) that is nearest to the
+ * given timestamp. The function looks for the most recent heartrate with a 
+ * timestamp before (less than) the input timestamp.
+ * @param  {Float}  timestamp           Timestamp in seconds.
+ * @param  {Array}  heartRateTimestamps Array of timestamps we have heart rate 
+ *                                      measurements for.
+ * @param  {Array}  heartRateBpms       Corresponding array of BPMs.
+ * @return {Integer}                    Nearest heart rate to the timestamp in 
+ *                                      Beats Per Minute (BPM).
+ */
+ function getNearestHeartRateMeasurement(timestamp, heartRateTimestamps, heartRateBpms) {
+
+  let lowIndex = 0, midIndex, highIndex = heartRateTimestamps.length - 1;
+
+  while(highIndex - lowIndex > 1) {
+    midIndex = Math.floor((lowIndex + highIndex) / 2);
+
+    // Jackpot! There is a heart rate value for this time exactly. Just return it.
+    if(timestamp === heartRateTimestamps[midIndex]) {
+      return heartRateBpms[midIndex];
+    } 
+    
+    // If the timestamp is greater than or the same as the final heartrate time,
+    // return the last heartrate BPM.
+    else if (timestamp >= heartRateTimestamps[highIndex]) {
+      return heartRateBpms[highIndex];
+    }
+
+    // Otherwise we gunna do some binary searching!
+    if(timestamp > heartRateTimestamps[midIndex]) {
+      lowIndex = midIndex;
+    } else {
+      highIndex = midIndex;
+    }
+  }
+
+  // We want the lower of the two values that the timestamp falls between
+  return heartRateBpms[lowIndex];
+ }
 
 /**
  * Converts the populated javascript object into a string of XML then aaves the
