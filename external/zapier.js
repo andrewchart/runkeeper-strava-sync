@@ -17,6 +17,8 @@
  * - activityPathType
  * - apiEndpoint
  * - apiKey
+ * - activityHeartRateTimestamp (optional)
+ * - activityHeartRateBpm (optional)
  */
 const API_ENDPOINT = inputData.apiEndpoint || null;
 const API_KEY = inputData.apiKey || null;

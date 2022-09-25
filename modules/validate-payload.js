@@ -8,24 +8,42 @@
 function validatePayload(data) {
 
   let expectedKeys = [
-    'activityType',
-    'activityStartTimeIso',
-    //'activityNotes', // Optional
-    'activityPathLatitude',
-    'activityPathLongitude',
-    'activityPathAltitude',
-    'activityPathTimestamp',
-    'activityPathType'
+    { keyName: 'activityType', required: true},
+    { keyName: 'activityStartTimeIso', required: true },
+    { keyName: 'activityNotes', required: false },
+    { keyName: 'activityPathLatitude', required: true },
+    { keyName: 'activityPathLongitude', required: true },
+    { keyName: 'activityPathAltitude', required: true },
+    { keyName: 'activityPathTimestamp', required: true },
+    { keyName: 'activityPathType', required: true },
+    { keyName: 'activityHeartRateTimestamp', required: false },
+    { keyName: 'activityHeartRateBpm', required: false }
   ];
 
   let validPayload = true;
 
-  // Check for presence of all the keys
-  for(i=0; i<expectedKeys.length; i++) {
+  // Check for any invalid keys
+  let validKeyNames = expectedKeys.map(a => a.keyName);
+  let dataKeyNames = Object.keys(data);
 
-    expected = expectedKeys[i];
+  for(i = 0; i < dataKeyNames.length; i++) {
+    
+    if( !validKeyNames.includes(dataKeyNames[i]) ) {
+      validPayload = false;
+      break;      
+    }
 
-    if(typeof data[expected] === "undefined") {
+  }
+
+  // Check for presence of all the required keys
+  for(i = 0; i < expectedKeys.length; i++) {
+
+    expectedKeyName = expectedKeys[i].keyName;
+
+    if(
+      typeof data[expectedKeyName] === "undefined" 
+      && expectedKeys[i].required === true 
+    ) {
       validPayload = false;
       break;
     }
