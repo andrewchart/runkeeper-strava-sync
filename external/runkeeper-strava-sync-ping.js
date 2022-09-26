@@ -27,7 +27,7 @@
 module.exports = async function () {
     const https = require('https');
 
-    https.get('https://runkeeper-strava-sync.azurewebsites.net/', (res) => {
+    https.get('https://your-app-url.example.com/', (res) => {
         return res;
     });
 };

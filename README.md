@@ -1,5 +1,5 @@
 # runkeeper-strava-sync
-These scripts are designed to receive GPS data about individual exercise activities from [Runkeeper](https://runkeeper.com/), convert it to [GPX](https://www.topografix.com/GPX/1/1/) format, then upload it to [Strava](https://strava.com) as a new activity.
+These scripts are designed to receive GPS and heart rate data about individual exercise activities from [Runkeeper](https://runkeeper.com/), convert it to [GPX](https://www.topografix.com/GPX/1/1/) format, then upload it to [Strava](https://strava.com) as a new activity. 
 
 ## Overview
 Running in a NodeJS environment, an Express server is set up to listen for incoming requests over http. The app contains an authentication view where the user can authorise the app to send activities to the Strava account of their choice.
