@@ -15,7 +15,7 @@
         line-height: 150%;
       }
 
-      h1, h2, p, button {
+      h1, h2, p {
         padding: 0.5em 12px;
       }
 
@@ -24,10 +24,15 @@
       }
 
       button {
-        margin: 12px 0 0 12px;
-        background-color: #ff7615;
-        color: #111;
-        font-weight: bold;
+        background-color: transparent;
+        outline: 0;
+        border: 0;
+        margin: 0.5em;
+        cursor: pointer;
+      }
+
+      button > img {
+        width: 17em;
       }
     </style>
   </head>
@@ -50,7 +55,12 @@
     </div>
 
     <a href="<%= data.strava_oauth_url %>">
-      <button>Sync a New Strava Account</button>
+      <button>
+        <img 
+          alt="Sync a New Strava Account" 
+          title="Sync a New Strava Account" 
+          src="./btn_strava_connect.png" />
+      </button>
     </a>
 
   </body>

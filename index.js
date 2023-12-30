@@ -189,6 +189,11 @@ app.get('/', (req, res) => {
 });
 
 /**
+ * Serve static assets from the public folder
+ */
+app.use(express.static('public', { index: false }));
+
+/**
  * All other routes should 404
  */
 app.all('*', (req, res) => {
