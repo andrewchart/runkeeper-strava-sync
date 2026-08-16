@@ -84,8 +84,7 @@ jobs:
         id: function-url
         shell: bash
         run: | 
-            hostname=$(az functionapp show --name "${{ secrets.AZURE_FUNCTIONAPP_NAME }}" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --query "defaultHostName" --output "tsv")
-            echo "Retrieved hostname: $hostname"
+            hostname=$(az functionapp show --name "${{ secrets.AZURE_FUNCTIONAPP_NAME }}" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --query "properties.defaultHostName" --output "tsv")
             echo "url=https://$hostname" >> "$GITHUB_OUTPUT"
 
       # runs the function to deploy the Runkeeper to Strava website
