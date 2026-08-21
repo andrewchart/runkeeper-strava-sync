@@ -25,8 +25,7 @@ app.http('deployStaticContent', {
 
         const container = blobService.getContainerClient(AZ_BLOB_STORAGE_NAME);
 
-        context.log(28,container);
-        
+
         // Create env.js to expose selected env vars to script
         //let jsString = '';
         //jsString += `const AZ_HTTP_FUNC_BASE_URL = "${AZ_HTTP_FUNC_BASE_URL}";\n`;
@@ -71,10 +70,10 @@ app.http('deployStaticContent', {
 
                     let blob = container.getBlockBlobClient(filename);
 
-                    context.log(74,blob);
+                    console.log(blob);
 
                     await blob.uploadFile(
-                        __dirname + '/static/' + filename,
+                        __dirname + '/staticz/' + filename,
                         {
                             blobHTTPHeaders: {
                                 blobContentType: mimeType
@@ -83,7 +82,7 @@ app.http('deployStaticContent', {
                     );
 
                 } catch(err) {
-                    context.error("Error deploying push subscription website: ", err);
+                    console.error("Error deploying push subscription website: ", err);
                 }
                 
             });
