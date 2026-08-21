@@ -12,10 +12,10 @@ app.http('deployStaticContent', {
         context.log('Deploying Runkeeper to Strava sync website to Azure Storage...');
 
         const {
-            AZ_BLOB_STORAGE_URL,
             AZ_BLOB_STORAGE_NAME,
-            RK2S_APP_VERSION,
-            WEBSITE_HOSTNAME
+            AZ_BLOB_STORAGE_URL,
+            AZ_HTTP_FUNC_BASE_URL,
+            RK2S_APP_VERSION
         } = process.env;
 
         const blobService = new BlobServiceClient(
@@ -24,75 +24,72 @@ app.http('deployStaticContent', {
         );
 
         const container = blobService.getContainerClient(AZ_BLOB_STORAGE_NAME);
-
-        let outputs = [];
         
         // Create env.js to expose selected env vars to script
         let jsString = '';
-        jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
+        jsString += `const AZ_HTTP_FUNC_BASE_URL = "${AZ_HTTP_FUNC_BASE_URL}";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
         fs.writeFileSync(__dirname + '/static/env.js', jsString);
 
         
         // Loop through all files in the static directory and upload them
-        fs.readdir(__dirname + '/static', (err, files) => {
+        // fs.readdir(__dirname + '/static', (err, files) => {
 
-            files.forEach(async filename => {
+        //     files.forEach(async filename => {
 
-                let mimeType;
+        //         let mimeType;
 
-                switch(path.extname(filename)) {
-                    case '.html':
-                        mimeType = 'text/html';
-                        break;
+        //         switch(path.extname(filename)) {
+        //             case '.html':
+        //                 mimeType = 'text/html';
+        //                 break;
 
-                    case '.css':
-                        mimeType = 'text/css';
-                        break;
+        //             case '.css':
+        //                 mimeType = 'text/css';
+        //                 break;
 
-                    case '.js':
-                        mimeType = 'text/javascript';
-                        break;
+        //             case '.js':
+        //                 mimeType = 'text/javascript';
+        //                 break;
 
-                    case '.json':
-                        mimeType = 'application/json';
-                        break;
+        //             case '.json':
+        //                 mimeType = 'application/json';
+        //                 break;
 
-                    case '.png':
-                        mimeType = 'image/png';
-                        break;
+        //             case '.png':
+        //                 mimeType = 'image/png';
+        //                 break;
 
-                    default:
-                        mimeType = 'text/html';
-                }
+        //             default:
+        //                 mimeType = 'text/html';
+        //         }
 
-                try {
+        //         try {
 
-                    let blob = container.getBlockBlobClient(filename);
+        //             let blob = container.getBlockBlobClient(filename);
 
-                    await blob.uploadFile(
-                        __dirname + '/static/' + filename,
-                        {
-                            blobHTTPHeaders: {
-                                blobContentType: mimeType
-                            }
-                        }
-                    );
-                } catch(err) {
-                    context.error("Error deploying push subscription website: ", err);
-                }
+        //             await blob.uploadFile(
+        //                 __dirname + '/static/' + filename,
+        //                 {
+        //                     blobHTTPHeaders: {
+        //                         blobContentType: mimeType
+        //                     }
+        //                 }
+        //             );
+
+        //         } catch(err) {
+        //             context.error("Error deploying push subscription website: ", err);
+        //         }
                 
-            });
+        //     });
 
-        });
+        // });
 
-        return { body: 0 };
+        return {
+            body: JSON.stringify({ message: 'deployStaticContent' }),
+            status: 200
+        }
 
     }    
 });
-
-function addProtocolToHostname(hostname) {
-    if(hostname.substring(0,10) === "localhost:") return "http://" + hostname;
-    return "//" + hostname;
-}
