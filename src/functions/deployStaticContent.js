@@ -24,6 +24,8 @@ app.http('deployStaticContent', {
         );
 
         const container = blobService.getContainerClient(AZ_BLOB_STORAGE_NAME);
+
+        context.log(28,container);
         
         // Create env.js to expose selected env vars to script
         //let jsString = '';
@@ -68,6 +70,8 @@ app.http('deployStaticContent', {
                 try {
 
                     let blob = container.getBlockBlobClient(filename);
+
+                    context.log(74,blob);
 
                     await blob.uploadFile(
                         __dirname + '/static/' + filename,
