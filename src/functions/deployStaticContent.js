@@ -26,9 +26,9 @@ app.http('deployStaticContent', {
         const container = blobService.getContainerClient(AZ_BLOB_STORAGE_NAME);
         
         // Create env.js to expose selected env vars to script
-        let jsString = '';
-        jsString += `const AZ_HTTP_FUNC_BASE_URL = "${AZ_HTTP_FUNC_BASE_URL}";\n`;
-        jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
+        //let jsString = '';
+        //jsString += `const AZ_HTTP_FUNC_BASE_URL = "${AZ_HTTP_FUNC_BASE_URL}";\n`;
+        //jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
         //fs.writeFileSync(__dirname + '/static/env.js', jsString);
 
@@ -87,7 +87,7 @@ app.http('deployStaticContent', {
         });
 
         return {
-            body: JSON.stringify({ message: 'deployStaticContent' }),
+            body: JSON.stringify({ message: 'deployStaticContent', dir: __dirname }),
             status: 200
         }
 
