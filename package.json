@@ -7,8 +7,9 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "@azure/functions": "^4.0.0"
+    "@azure/functions": "^4.0.0",
+    "@azure/identity": "^4.13.2",
+    "@azure/storage-blob": "^12.33.0"
   },
-  "devDependencies": {},
   "main": "src/{index.js,functions/*.js}"
 }
