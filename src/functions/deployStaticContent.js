@@ -70,10 +70,10 @@ app.http('deployStaticContent', {
 
                     let blob = container.getBlockBlobClient(filename);
 
-                    console.log(blob);
+                    console.log(73,blob);
 
                     await blob.uploadFile(
-                        __dirname + '/staticz/' + filename,
+                        __dirname + '/static/' + filename,
                         {
                             blobHTTPHeaders: {
                                 blobContentType: mimeType
