@@ -30,7 +30,7 @@ app.http('deployStaticContent', {
         jsString += `const AZ_HTTP_FUNC_BASE_URL = "${AZ_HTTP_FUNC_BASE_URL}";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
-        fs.writeFileSync(__dirname + '/static/env.js', jsString);
+        //fs.writeFileSync(__dirname + '/static/env.js', jsString);
 
         
         // Loop through all files in the static directory and upload them
