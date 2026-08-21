@@ -34,57 +34,57 @@ app.http('deployStaticContent', {
 
         
         // Loop through all files in the static directory and upload them
-        // fs.readdir(__dirname + '/static', (err, files) => {
+        fs.readdir(__dirname + '/static', (err, files) => {
 
-        //     files.forEach(async filename => {
+            files.forEach(async filename => {
 
-        //         let mimeType;
+                let mimeType;
 
-        //         switch(path.extname(filename)) {
-        //             case '.html':
-        //                 mimeType = 'text/html';
-        //                 break;
+                switch(path.extname(filename)) {
+                    case '.html':
+                        mimeType = 'text/html';
+                        break;
 
-        //             case '.css':
-        //                 mimeType = 'text/css';
-        //                 break;
+                    case '.css':
+                        mimeType = 'text/css';
+                        break;
 
-        //             case '.js':
-        //                 mimeType = 'text/javascript';
-        //                 break;
+                    case '.js':
+                        mimeType = 'text/javascript';
+                        break;
 
-        //             case '.json':
-        //                 mimeType = 'application/json';
-        //                 break;
+                    case '.json':
+                        mimeType = 'application/json';
+                        break;
 
-        //             case '.png':
-        //                 mimeType = 'image/png';
-        //                 break;
+                    case '.png':
+                        mimeType = 'image/png';
+                        break;
 
-        //             default:
-        //                 mimeType = 'text/html';
-        //         }
+                    default:
+                        mimeType = 'text/html';
+                }
 
-        //         try {
+                try {
 
-        //             let blob = container.getBlockBlobClient(filename);
+                    let blob = container.getBlockBlobClient(filename);
 
-        //             await blob.uploadFile(
-        //                 __dirname + '/static/' + filename,
-        //                 {
-        //                     blobHTTPHeaders: {
-        //                         blobContentType: mimeType
-        //                     }
-        //                 }
-        //             );
+                    await blob.uploadFile(
+                        __dirname + '/static/' + filename,
+                        {
+                            blobHTTPHeaders: {
+                                blobContentType: mimeType
+                            }
+                        }
+                    );
 
-        //         } catch(err) {
-        //             context.error("Error deploying push subscription website: ", err);
-        //         }
+                } catch(err) {
+                    context.error("Error deploying push subscription website: ", err);
+                }
                 
-        //     });
+            });
 
-        // });
+        });
 
         return {
             body: JSON.stringify({ message: 'deployStaticContent' }),
