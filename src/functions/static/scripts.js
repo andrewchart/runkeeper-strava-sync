@@ -7,7 +7,7 @@ function login() {
     
     event.preventDefault();
 
-    return fetch(`${AZ_HTTP_FUNC_BASE_URL}/api/auth`, {
+    return fetch(`${AZ_HTTP_FUNC_BASE_URL}/auth`, {
         method: 'post',
         headers: {
             "Content-Type": "application/json",

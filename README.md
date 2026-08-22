@@ -24,6 +24,11 @@ You can read more detail about the thinking behind the app on [my blog](https://
 
 ### This App
 
+Setup github secrets
+
+Function app needs a system managed identity Storage Blob Data Contributor for the storage account.
+
+CORS
 
 ### Zapier
 

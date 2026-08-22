@@ -89,5 +89,5 @@ jobs:
 
       # runs the function to deploy the Runkeeper to Strava website
       - name: Deploy static site
-        run: curl -X POST ${{ steps.function-url.outputs.url }}/api/deploystaticcontent
+        run: curl -X POST ${{ steps.function-url.outputs.url }}/deployStaticContent
           
