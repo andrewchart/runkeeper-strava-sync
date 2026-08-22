@@ -14,7 +14,7 @@ app.http('deployStaticContent', {
         const {
             AZ_BLOB_STORAGE_NAME,
             AZ_BLOB_STORAGE_URL,
-            RK2S_APP_VERSION,
+            RK2S_APP_VERSION
             //WEBSITE_HOSTNAME
         } = process.env;
 
@@ -28,7 +28,7 @@ app.http('deployStaticContent', {
 
         // Create env.js to expose selected env vars to script
         let jsString = '';
-        jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
+        //jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
         //fs.writeFileSync(__dirname + '/static/env.js', jsString);
@@ -80,7 +80,7 @@ app.http('deployStaticContent', {
                     );
 
                 } catch(err) {
-                    console.error("Error deploying push subscription website: ", err);
+                    context.log("Error deploying push subscription website: ", err);
                 }
                 
             });
