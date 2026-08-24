@@ -31,61 +31,72 @@ app.http('deployStaticContent', {
         jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
-        fs.writeFileSync(__dirname + '/static/env.js', jsString);
+        fs.writeFile(__dirname + '/static/env.js', jsString, 'utf8', (err) => {
+            if (err) {
+                context.error('Error writing file:', err);
+                return;
+            }
+            context.log('File written successfully!');
 
-        
-        // Loop through all files in the static directory and upload them
-        fs.readdir(__dirname + '/static', (err, files) => {
 
-            files.forEach(async filename => {
+            // Loop through all files in the static directory and upload them
+            fs.readdir(__dirname + '/static', (err, files) => {
 
-                let mimeType;
+                files.forEach(async filename => {
 
-                switch(path.extname(filename)) {
-                    case '.html':
-                        mimeType = 'text/html';
-                        break;
+                    let mimeType;
 
-                    case '.css':
-                        mimeType = 'text/css';
-                        break;
+                    switch(path.extname(filename)) {
+                        case '.html':
+                            mimeType = 'text/html';
+                            break;
 
-                    case '.js':
-                        mimeType = 'text/javascript';
-                        break;
+                        case '.css':
+                            mimeType = 'text/css';
+                            break;
 
-                    case '.json':
-                        mimeType = 'application/json';
-                        break;
+                        case '.js':
+                            mimeType = 'text/javascript';
+                            break;
 
-                    case '.png':
-                        mimeType = 'image/png';
-                        break;
+                        case '.json':
+                            mimeType = 'application/json';
+                            break;
 
-                    default:
-                        mimeType = 'text/html';
-                }
+                        case '.png':
+                            mimeType = 'image/png';
+                            break;
 
-                try {
+                        default:
+                            mimeType = 'text/html';
+                    }
 
-                    let blob = container.getBlockBlobClient(filename);
+                    try {
 
-                    await blob.uploadFile(
-                        __dirname + '/static/' + filename,
-                        {
-                            blobHTTPHeaders: {
-                                blobContentType: mimeType
+                        let blob = container.getBlockBlobClient(filename);
+
+                        await blob.uploadFile(
+                            __dirname + '/static/' + filename,
+                            {
+                                blobHTTPHeaders: {
+                                    blobContentType: mimeType
+                                }
                             }
-                        }
-                    );
+                        );
 
-                } catch(err) {
-                    context.log("Error deploying push subscription website: ", err);
-                }
-                
+                    } catch(err) {
+                        context.log("Error deploying push subscription website: ", err);
+                    }
+                    
+                });
+
             });
 
+
         });
+
+        
+        
 
         return {
             body: JSON.stringify({ message: 'OK' }),
