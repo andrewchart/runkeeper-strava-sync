@@ -28,7 +28,7 @@ app.http('deployStaticContent', {
 
         // Create env.js to expose selected env vars to script
         let jsString = '';
-        //jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
+        jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
         //fs.writeFileSync(__dirname + '/static/env.js', jsString);
