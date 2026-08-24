@@ -14,8 +14,8 @@ app.http('deployStaticContent', {
         const {
             AZ_BLOB_STORAGE_NAME,
             AZ_BLOB_STORAGE_URL,
-            RK2S_APP_VERSION
-            //WEBSITE_HOSTNAME
+            RK2S_APP_VERSION,
+            WEBSITE_HOSTNAME
         } = process.env;
 
         const blobService = new BlobServiceClient(
@@ -28,10 +28,10 @@ app.http('deployStaticContent', {
 
         // Create env.js to expose selected env vars to script
         let jsString = '';
-        jsString += `const AZ_HTTP_FUNC_BASE_URL = "//example.com";\n`;
+        //jsString += `const AZ_HTTP_FUNC_BASE_URL = "${ addProtocolToHostname(WEBSITE_HOSTNAME) }";\n`;
         jsString += `const RK2S_APP_VERSION = "${RK2S_APP_VERSION}";`;
 
-        fs.writeFileSync(__dirname + '/static/env.js', jsString);
+        //fs.writeFileSync(__dirname + '/static/env.js', jsString);
 
         
         // Loop through all files in the static directory and upload them
@@ -96,7 +96,7 @@ app.http('deployStaticContent', {
 });
 
 
-// function addProtocolToHostname(hostname) {
-//     if(hostname.substring(0,10) === "localhost:") return "http://" + hostname;
-//     return "//" + hostname;
-// }
+function addProtocolToHostname(hostname) {
+    if(hostname.substring(0,10) === "localhost:") return "http://" + hostname;
+    return "//" + hostname;
+}
