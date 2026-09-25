@@ -8,6 +8,13 @@ app.http('httpTrigger1', {
 
         const name = request.query.get('name') || await request.text() || 'world';
 
-        return { body: `Hello, ${name}!` };
+        return { 
+            body: `<h1>Hello, ${name}!</h1><img src="/api/static/btn_strava_connect.png" />`,
+            status: 200,
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8'
+            }
+        
+        };
     }
 });
