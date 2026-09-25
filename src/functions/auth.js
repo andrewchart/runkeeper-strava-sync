@@ -2,6 +2,24 @@ const { app } = require('@azure/functions');
 
 const { RK2S_APP_PASSWORD } = process.env;
 
+
+
+app.http('home', {
+    methods: ['GET'],
+    authLevel: 'anonymous',
+    route: '/',
+    handler: async (request, context) => {
+        return { 
+            body: `<h1>Home</h1>`,
+            status: 200,
+            headers: {
+                'Content-Type': 'text/html'
+            }
+        }
+    }
+});
+
+
 app.http('auth', {
     methods: ['POST'],
     authLevel: 'anonymous',
