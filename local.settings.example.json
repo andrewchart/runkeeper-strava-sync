@@ -4,6 +4,8 @@
     "AzureWebJobsDisableHomepage": true,
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=runkeeperstravasync;AccountKey=xxxxxx;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "node",
+    "RK2S_APP_PASSWORD": "your-password-here",
+    "RK2S_APP_VERSION": "2.0.0",
     "STRAVA_CLIENT_ID": "12345",
     "STRAVA_CLIENT_SECRET": "682b57a2e8ef7f8bcada75d2417456d7025edd48"
   }

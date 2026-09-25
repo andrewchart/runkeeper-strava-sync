@@ -2,7 +2,11 @@ const { app } = require('@azure/functions');
 const fs = require('fs');
 
 const REGISTRY = [
-    'btn_strava_connect.png'
+    '192.png',
+    'btn_strava_connect.png',
+    'manifest.json',
+    'scripts.js',
+    'styles.css'
 ];
 
 app.http('static', {
