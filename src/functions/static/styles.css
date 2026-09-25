@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding:0;
+    font-family: sans-serif;
+}
+
+body {
+    min-width: 360px;
+    max-width: 800px;
+    line-height: 150%;
+}
+
+h1, h2, p {
+    padding: 0.5em 12px;
+    line-height: 133%;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+form {
+    padding: 0.5em 12px;
+}
+
+input[type=password] {
+    width: 30%;
+    min-width: 200px;
+    height: 2em;
+    padding: 2px 0;
+}
+
+input[type=submit] {
+    margin: 0.5em;
+    padding: 0.45em 2em;
+    background-color: #fe3b00;
+    color: #fff;
+    border: 2px solid #e4724f;
+    outline: 0;
+    cursor: pointer; 
+}
+
+button {
+    margin: 0.5em;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    cursor: pointer;
+}
+
+button > img {
+    width: 17em;
+}
