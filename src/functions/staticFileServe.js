@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const REGISTRY = [
     '192.png',
+    'btn_onedrive_connect.png',
     'btn_strava_connect.png',
     'manifest.json',
     'scripts.js',

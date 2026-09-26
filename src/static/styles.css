@@ -49,5 +49,31 @@ button {
 }
 
 button > img {
-    width: 17em;
+    max-width: 70%;
+    min-width: 140px;
+}
+
+table {
+    width: 100%;
+    margin-top: 0.8em;
+    border-spacing: 0.8em;
+}
+
+th, td {
+    padding: 0.8em;
+    margin: 0.5em;
+    width: 50%;
+    background-color: #ffe1ce;
+    text-align: center;
+    vertical-align: top;
+    line-height: 188%;
+}
+
+.connected-service-details {
+    display: none;
+}
+
+.connect-new-service p {
+    font-size: 0.8em;
+    margin-top: 1.6em;
 }

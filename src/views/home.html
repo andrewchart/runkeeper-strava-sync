@@ -10,20 +10,20 @@
         <link rel="icon" type="image/x-icon" href="/static/192.png">
     </head>
 
-  <body>
-    <h1>Runkeeper to Strava - Authorise Accounts</h1>
+    <body>
+        <h1>Runkeeper to Strava - Login</h1>
 
-    <main>
+            <main>
 
-      <p>Supply the app password to log in.</p>
-    
-      <form name="login" id="loginForm" action="/connect" method="post">
-          <input name="password" id="password" type="password" />
-          <input name="submit" id="submit" type="submit" value="Log In"  />
-      </form>
+            <p>Supply the app password to log in.</p>
 
-    </main>
+            <form name="login" id="login-form" action="/connect" method="post">
+                <input name="password" id="password" type="password" />
+                <input name="submit" id="submit" type="submit" value="Log In"  />
+            </form>
 
-    <script src="/static/scripts.js"></script>
-  </body>
+        </main>
+
+        <script src="/static/scripts.js"></script>
+    </body>
 </html>

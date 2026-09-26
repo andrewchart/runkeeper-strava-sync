@@ -1,1 +1,79 @@
-<h1>Connect your services here</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+        <title>Runkeeper to Strava - Connected Services</title>
+        <link rel="stylesheet" href="/static/styles.css">
+        <link rel="manifest" href="/static/manifest.json" />
+        <link rel="icon" type="image/x-icon" href="/static/192.png">
+    </head>
+
+    <body>
+        <h1>Runkeeper to Strava - Connected Services</h1>
+
+        <main>
+
+            <p>Connect your accounts below:</p>
+
+            <table id="connected-services">
+                <tbody>
+                    <tr>
+                        <td>
+                            <h3>Data Source</h3>
+
+                            <p id="data-source-connection-message">No data source is currently connected</p>
+
+                            <div id="connected-onedrive-account" class="connected-service-details">
+                                <p>
+                                    <strong>Email Address: </strong><span id="connected-onedrive-account-email"></span><br />
+                                    <strong>Account ID: </strong><span id="connected-onedrive-account-id"></span>
+                                </p>
+                            </div>
+
+                            <div id="connect-new-onedrive-account" class="connect-new-service">
+                                <p>Click below to sync a new OneDrive account</p>
+                                <a id="onedrive-oauth-link" href="javascript:;">
+                                    <button>
+                                        <img 
+                                            alt="Sync a new Onedrive account" 
+                                            title="Sync a new Onedrive account" 
+                                            src="/static/btn_onedrive_connect.png" />
+                                    </button>
+                                </a>
+                            </div>
+                        </td>
+
+                        <td>
+                            <h3>Strava</h3>
+
+                            <p id="strava-connection-message">No Strava account is currently connected</p>
+
+                            <div id="connected-strava-account" class="connected-service-details">
+                                <p>
+                                    <strong>Name: </strong><span id="connected-strava-account-name"></span><br />
+                                    <strong>Account ID: </strong><span id="connected-strava-account-id"></span>
+                                </p>
+                            </div>
+                            
+                            <div id="connect-new-strava-account" class="connect-new-service">
+                                <p>Click below to sync a new Strava account</p>
+                                <a id="strava-oauth-link" href="javascript:;">
+                                    <button>
+                                        <img 
+                                            alt="Sync a new Strava account" 
+                                            title="Sync a new Strava account" 
+                                            src="/static/btn_strava_connect.png" />
+                                    </button>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </main>
+        <script src="/static/scripts.js"></script>
+    </body>
+</html>
