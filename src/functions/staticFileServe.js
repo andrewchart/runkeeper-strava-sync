@@ -17,7 +17,7 @@ app.http('static', {
     handler: async (request, context) => {
         context.log(`Http function processed request for url "${request.url}"`);
 
-        let file = request.params.file;
+        let { file } = request.params;
 
         if(!file || !REGISTRY.includes(file)) {
             return {

@@ -59,7 +59,7 @@ table {
     border-spacing: 0.8em;
 }
 
-th, td {
+td {
     padding: 0.8em;
     margin: 0.5em;
     width: 50%;
@@ -67,6 +67,12 @@ th, td {
     text-align: center;
     vertical-align: top;
     line-height: 188%;
+}
+
+@media (max-width: 440px) {
+    td {
+        font-size: 0.7em;
+    }
 }
 
 .connected-service-details {
