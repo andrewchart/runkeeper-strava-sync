@@ -72,7 +72,7 @@ function constructOauthAuthorizationURL(service) {
 
             query = {
                 client_id: MS_CLIENT_ID,
-                redirect_uri: `${getUriProtocol()}${WEBSITE_HOSTNAME}/api/auth/onedrive/callback`,
+                redirect_uri: `{{HOSTNAME}}/api/auth/onedrive/callback`,
                 response_type: 'code',
                 scope: 'Files.ReadWrite'
             }           
@@ -83,7 +83,7 @@ function constructOauthAuthorizationURL(service) {
 
             query = {
                 client_id: STRAVA_CLIENT_ID,
-                redirect_uri: `${getUriProtocol()}${WEBSITE_HOSTNAME}/api/auth/strava/callback`,
+                redirect_uri: `{{HOSTNAME}}/api/auth/strava/callback`,
                 response_type: 'code',
                 approval_prompt: 'auto',
                 scope: 'activity:write'
@@ -96,9 +96,4 @@ function constructOauthAuthorizationURL(service) {
                             .join('&');
 
     return `${baseUrl}?${queryString}`;
-}
-
-function getUriProtocol() {
-    if(WEBSITE_HOSTNAME.match(/^localhost/gi)) return 'http://';
-    return 'https://';
 }

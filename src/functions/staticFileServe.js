@@ -5,8 +5,8 @@ const REGISTRY = [
     '192.png',
     'btn_onedrive_connect.png',
     'btn_strava_connect.png',
+    'connect.js',
     'manifest.json',
-    'scripts.js',
     'styles.css'
 ];
 
